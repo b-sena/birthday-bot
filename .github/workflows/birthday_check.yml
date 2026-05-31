@@ -30,4 +30,5 @@ jobs:
           WPPCONNECT_TOKEN:   ${{ secrets.WPPCONNECT_TOKEN }}
           WPPCONNECT_SESSION: ${{ secrets.WPPCONNECT_SESSION }}
           WPPCONNECT_PHONE:   ${{ secrets.WPPCONNECT_PHONE }}
+          WPPCONNECT_GROUP:   ${{ secrets.WPPCONNECT_GROUP }}
         run: python check_birthdays.py
