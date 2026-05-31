@@ -2,8 +2,8 @@ name: 🎂 Verificar Aniversariantes
 
 on:
   schedule:
-    # Roda todo dia às 08:00 (horário de Brasília = UTC-3, então 11:00 UTC)
-    - cron: "0 11 * * *"
+    # Roda todo dia às 06:00 (horário de Brasília = UTC-3, então 11:00 UTC)
+    - cron: "0 9 * * *"
 
   # Permite rodar manualmente pela aba Actions do GitHub (para testar)
   workflow_dispatch:
