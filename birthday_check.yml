@@ -1,0 +1,33 @@
+name: 🎂 Verificar Aniversariantes
+
+on:
+  schedule:
+    # Roda todo dia às 08:00 (horário de Brasília = UTC-3, então 11:00 UTC)
+    - cron: "0 11 * * *"
+
+  # Permite rodar manualmente pela aba Actions do GitHub (para testar)
+  workflow_dispatch:
+
+jobs:
+  check-birthdays:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependências
+        run: pip install requests
+
+      - name: Verificar aniversariantes e notificar
+        env:
+          WPPCONNECT_URL:     ${{ secrets.WPPCONNECT_URL }}
+          WPPCONNECT_TOKEN:   ${{ secrets.WPPCONNECT_TOKEN }}
+          WPPCONNECT_SESSION: ${{ secrets.WPPCONNECT_SESSION }}
+          WPPCONNECT_PHONE:   ${{ secrets.WPPCONNECT_PHONE }}
+        run: python check_birthdays.py
