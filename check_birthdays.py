@@ -42,6 +42,7 @@ ANIVERSARIANTES = [
     ("Ld. Lucas Varante",   6, 24),
     ("Ld. Laysla",          6, 30),
     ("Jaqueline",           6, 30),
+    ("Deyvit",              7, 10),
     ("Ld. Vladi",           7, 13),
     ("Giovana TEENS",       7, 22),
     ("Rebeca KIDS",         7, 23),
