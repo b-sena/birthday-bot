@@ -92,7 +92,7 @@ def send_whatsapp(message: str, phone: str) -> None:
         "message": message,
     }
     try:
-        resp = requests.post(url, json=payload, headers=headers, timeout=30)
+        resp = requests.post(url, json=payload, headers=headers, timeout=120)
         print(f"Status {phone}: {resp.status_code}")
         print(resp.text)
     except Exception as e:
