@@ -26,9 +26,9 @@ jobs:
 
       - name: Verificar aniversariantes e notificar
         env:
-          WPPCONNECT_URL:     ${{ secrets.WPPCONNECT_URL }}
-          WPPCONNECT_TOKEN:   ${{ secrets.WPPCONNECT_TOKEN }}
-          WPPCONNECT_SESSION: ${{ secrets.WPPCONNECT_SESSION }}
-          WPPCONNECT_PHONE:   ${{ secrets.WPPCONNECT_PHONE }}
-          WPPCONNECT_GROUP:   ${{ secrets.WPPCONNECT_GROUP }}
+          EVOLUTION_URL:      ${{ secrets.EVOLUTION_URL }}
+          EVOLUTION_APIKEY:   ${{ secrets.EVOLUTION_APIKEY }}
+          EVOLUTION_INSTANCE: ${{ secrets.EVOLUTION_INSTANCE }}
+          EVOLUTION_PHONE:    ${{ secrets.EVOLUTION_PHONE }}
+          EVOLUTION_GROUP:    ${{ secrets.EVOLUTION_GROUP }}
         run: python check_birthdays.py

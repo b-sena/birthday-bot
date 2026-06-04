@@ -73,30 +73,28 @@ ANIVERSARIANTES = [
 # CONFIGURAÇÃO DO WPPCONNECT
 # Variáveis definidas como Secrets no GitHub
 # ============================================================
-SERVER_URL = os.environ["WPPCONNECT_URL"]      # Ex: http://163.176.211.25:21465
-TOKEN      = os.environ["WPPCONNECT_TOKEN"]    # Token gerado
-SESSION    = os.environ["WPPCONNECT_SESSION"]  # Ex: mySession
-PHONE      = os.environ["WPPCONNECT_PHONE"]    # Ex: 5551999990000
-GROUP      = os.environ["WPPCONNECT_GROUP"]
+SERVER_URL = os.environ["EVOLUTION_URL"]      # http://163.176.211.25:8080
+API_KEY    = os.environ["EVOLUTION_APIKEY"]   # birthday123bot
+INSTANCE   = os.environ["EVOLUTION_INSTANCE"] # birthday-bot
+PHONE      = os.environ["EVOLUTION_PHONE"]    # 5551997063185
+GROUP      = os.environ["EVOLUTION_GROUP"]    # 120363040976590973@g.us
 
 
-def send_whatsapp(message: str, phone: str) -> None:
-    url = f"{SERVER_URL}/api/{SESSION}/send-message"
+def send_whatsapp(message: str, number: str) -> None:
+    url = f"{SERVER_URL}/message/sendText/{INSTANCE}"
     headers = {
-        "Content-Type":  "application/json",
-        "Authorization": f"Bearer {TOKEN}",
+        "Content-Type": "application/json",
+        "apikey": API_KEY,
     }
     payload = {
-        "phone":   phone,
-        "isGroup": "@g.us" in phone,
-        "message": message,
+        "number": number,
+        "textMessage": {"text": message},
     }
     try:
-        resp = requests.post(url, json=payload, headers=headers, timeout=120)
-        print(f"Status {phone}: {resp.status_code}")
-        print(resp.text)
+        resp = requests.post(url, json=payload, headers=headers, timeout=30)
+        print(f"Enviado para {number}: {resp.status_code}")
     except Exception as e:
-        print(f"Erro: {e}")
+        print(f"Erro ao enviar para {number}: {e}")
 
 
 def main():
@@ -106,7 +104,7 @@ def main():
         for nome, mes, dia in ANIVERSARIANTES
         if mes == hoje.month and dia == hoje.day
     ]
-
+ 
     if not aniversariantes_hoje:
         msg_pessoal = f"Nenhum aniversariante hoje ({hoje.strftime('%d/%m')}). 🎂"
         msg_grupo   = "📅 *Oi, líderes!*\n\nNenhum aniversariante hoje. Que seja um ótimo dia! ☀️"
@@ -118,11 +116,11 @@ def main():
         nomes = ", ".join(aniversariantes_hoje[:-1]) + f" e {aniversariantes_hoje[-1]}"
         msg_pessoal = f"Hoje fazem aniversário: *{nomes}*! 🎂"
         msg_grupo   = f"🎂 *Oi, líderes!*\n\nHoje fazem aniversário: *{nomes}*! Não esqueçam de parabenizá-los e fazer eles se sentirem especiais! 🎉"
-
+ 
     print(f"Enviando: {msg_grupo}")
     send_whatsapp(msg_pessoal, PHONE)
     send_whatsapp(msg_grupo, GROUP)
-
-
+ 
+ 
 if __name__ == "__main__":
     main()
