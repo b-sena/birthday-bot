@@ -88,14 +88,13 @@ def send_whatsapp(message: str, number: str) -> None:
     }
     payload = {
         "number": number,
-        "textMessage": {"text": message},
+        "text": message,
     }
     try:
         resp = requests.post(url, json=payload, headers=headers, timeout=30)
         print(f"Enviado para {number}: {resp.status_code}")
     except Exception as e:
         print(f"Erro ao enviar para {number}: {e}")
-
 
 def main():
     BRT = timezone(timedelta(hours=-3))
