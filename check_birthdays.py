@@ -1,6 +1,6 @@
 import os
 import requests
-from datetime import date
+from datetime import date, datetime, timezone, timedelta
 
 # ============================================================
 # 🎂 LISTA DE ANIVERSARIANTES
@@ -98,7 +98,8 @@ def send_whatsapp(message: str, number: str) -> None:
 
 
 def main():
-    hoje = date.today()
+    BRT = timezone(timedelta(hours=-3))
+    hoje = datetime.now(BRT).date()
     aniversariantes_hoje = [
         nome
         for nome, mes, dia in ANIVERSARIANTES
