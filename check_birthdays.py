@@ -1,126 +1,109 @@
 import os
+import csv
 import requests
-from datetime import date, datetime, timezone, timedelta
+from datetime import datetime, timezone, timedelta
+from io import StringIO
 
 # ============================================================
-# 🎂 LISTA DE ANIVERSARIANTES
-# Formato: ("Nome", mês, dia)
+# CONFIGURAÇÃO
 # ============================================================
-ANIVERSARIANTES = [
-    ("Viviane",             1,  3),
-    ("Pastora",             1,  7),
-    ("Marina KIDS",         1,  7),
-    ("Gabriel KIDS",        1,  16),
-    ("Lorenzo TEENS",       1, 28),
-    ("Dani FLAME",          2,  5),
-    ("Lucas TEENS",         2, 12),
-    ("Luciano",             2, 13),
-    ("Bola de Neve CMQ",    2, 22),
-    ("Richelle",            2, 26),
-    ("João Brunno",         2, 26),
-    ("Dc. Vitomar",         3,  2),
-    ("Manuela KIDS",        3,  2),
-    ("Presb. Mauricio",     3, 30),
-    ("Dc. Léo",             4,  1),
-    ("Thaís",               4,  2),
-    ("Fabio Boeira",        4, 13),
-    ("Ana Paula",           4, 18),
-    ("Karine",              4, 22),
-    ("Alexia TEENS",        4, 25),
-    ("Lucas Figueiredo",    4, 25),
-    ("José Gabriel KIDS",   5,  2),
-    ("Ld. Jagner",          5,  3),
-    ("Alice",               5,  4),
-    ("Ld. Kellen",          5, 11),
-    ("Bruna",               5, 14),
-    ("Ielen TEENS",         5, 19),
-    ("Serginho",            5, 21),
-    ("Jackson",             5, 26),
-    ("Bruna KIDS",          6,  4),
-    ("Helena KIDS",         6, 13),
-    ("Presb. Haithana",     6, 19),
-    ("Ld. Lucas Varante",   6, 24),
-    ("Ld. Laysla",          6, 30),
-    ("Jaqueline",           6, 30),
-    ("Deyvit",              7, 10),
-    ("Ld. Vladi",           7, 13),
-    ("Giovana TEENS",       7, 22),
-    ("Rebeca KIDS",         7, 23),
-    ("Pastor",              7, 29),
-    ("Suzana",              7, 31),
-    ("Joaquim KIDS",        8,  2),
-    ("Sofia KIDS",          8,  2),
-    ("Isa TEENS",           8,  4),
-    ("José TEENS",          8,  6),
-    ("Alice TEENS",         8, 26),
-    ("Daniel",              9,  4),
-    ("Andressa",            9, 13),
-    ("Lucas Santos",        9, 18),
-    ("Luana",              10,  5),
-    ("Nei Borget",         10, 14),
-    ("Kelly",              10, 30),
-    ("Hope KIDS",          11, 10),
-    ("Dc. Angelise",       11, 14),
-    ("Davi TEENS",         11, 17),
-    ("Enio",               11, 27),
-    ("Bento KIDS",         12,  2),
-    ("Amélia",             12, 13),
-    ("Ld. Vitória",        12, 14),
-    ("Júlio",              12, 23),
-]
+SHEETS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTrF-9UTvX92qw-7Jj7xpebBO58Hk7W9YZN3kcg3vpXR02-cYk4BAky0LBODHtHK4WpujtPsEf7h-Zq/pub?gid=0&single=true&output=csv"
 
-# ============================================================
-# CONFIGURAÇÃO DO WPPCONNECT
-# Variáveis definidas como Secrets no GitHub
-# ============================================================
-SERVER_URL = os.environ["EVOLUTION_URL"]      # http://163.176.211.25:8080
-API_KEY    = os.environ["EVOLUTION_APIKEY"]   # birthday123bot
-INSTANCE   = os.environ["EVOLUTION_INSTANCE"] # birthday-bot
-PHONE      = os.environ["EVOLUTION_PHONE"]    # 5551997063185
-GROUP      = os.environ["EVOLUTION_GROUP"]    # 120363040976590973@g.us
+EVOLUTION_URL      = os.environ["EVOLUTION_URL"]
+EVOLUTION_APIKEY   = os.environ["EVOLUTION_APIKEY"]
+EVOLUTION_INSTANCE = os.environ["EVOLUTION_INSTANCE"]
+PHONE              = os.environ["EVOLUTION_PHONE"]
+GROUP              = os.environ["EVOLUTION_GROUP"]
 
 
+# ============================================================
+# LER ANIVERSARIANTES DO GOOGLE SHEETS
+# Colunas: Nome | Dia | Mês | Célula
+# ============================================================
+def carregar_aniversariantes():
+    resp = requests.get(SHEETS_URL, timeout=30)
+    resp.raise_for_status()
+    reader = csv.DictReader(StringIO(resp.text))
+    aniversariantes = []
+    for row in reader:
+        try:
+            nome   = row["Nome"].strip()
+            dia    = int(row["Dia"].strip())
+            mes    = int(row["Mês"].strip())
+            celula = row["Célula"].strip()
+            if nome:
+                aniversariantes.append((nome, dia, mes, celula))
+        except (ValueError, KeyError):
+            continue
+    return aniversariantes
+
+
+# ============================================================
+# ENVIAR PELO WHATSAPP
+# ============================================================
 def send_whatsapp(message: str, number: str) -> None:
-    url = f"{SERVER_URL}/message/sendText/{INSTANCE}"
+    url = f"{EVOLUTION_URL}/message/sendText/{EVOLUTION_INSTANCE}"
     headers = {
         "Content-Type": "application/json",
-        "apikey": API_KEY,
+        "apikey": EVOLUTION_APIKEY,
     }
     payload = {
         "number": number,
         "text": message,
     }
     try:
-        resp = requests.post(url, json=payload, headers=headers, timeout=30)
+        resp = requests.post(url, json=payload, headers=headers, timeout=60)
         print(f"Enviado para {number}: {resp.status_code}")
     except Exception as e:
         print(f"Erro ao enviar para {number}: {e}")
 
+
+# ============================================================
+# MAIN
+# ============================================================
 def main():
     BRT = timezone(timedelta(hours=-3))
     hoje = datetime.now(BRT).date()
+
+    print(f"Verificando aniversariantes para {hoje.strftime('%d/%m/%Y')}...")
+
+    aniversariantes = carregar_aniversariantes()
+    print(f"{len(aniversariantes)} aniversariantes carregados da planilha.")
+
     aniversariantes_hoje = [
-        nome
-        for nome, mes, dia in ANIVERSARIANTES
-        if mes == hoje.month and dia == hoje.day
+        (nome, celula)
+        for nome, dia, mes, celula in aniversariantes
+        if dia == hoje.day and mes == hoje.month
     ]
- 
+
     if not aniversariantes_hoje:
         msg_pessoal = f"Nenhum aniversariante hoje ({hoje.strftime('%d/%m')}). 🎂"
-        msg_grupo   = "📅 *Oi, líderes!*\n\nNenhum aniversariante hoje. Que seja um ótimo dia! ☀️"
+        msg_grupo   = "📅 *Bom dia, líderes!*\n\nNenhum aniversariante hoje. Que seja um ótimo dia! ☀️"
     elif len(aniversariantes_hoje) == 1:
-        nome = aniversariantes_hoje[0]
-        msg_pessoal = f"Hoje é aniversário de *{nome}*! 🎂"
-        msg_grupo   = f"🎂 *Oi, líderes!*\n\nHoje é aniversário de *{nome}*! Não esqueçam de parabenizá-lo(a) e fazer ele(a) se sentir especial! 🎉"
+        nome, celula = aniversariantes_hoje[0]
+        celula_txt   = f" _(Célula {celula})_" if celula else ""
+        msg_pessoal  = f"Hoje é aniversário de *{nome}*{celula_txt}! 🎂"
+        msg_grupo    = (
+            f"🎂 *Bom dia, líderes!*\n\n"
+            f"Hoje é aniversário de *{nome}*{celula_txt}!\n"
+            f"Não esqueçam de parabenizá-lo(a) e fazer ele(a) se sentir especial! 🎉"
+        )
     else:
-        nomes = ", ".join(aniversariantes_hoje[:-1]) + f" e {aniversariantes_hoje[-1]}"
-        msg_pessoal = f"Hoje fazem aniversário: *{nomes}*! 🎂"
-        msg_grupo   = f"🎂 *Oi, líderes!*\n\nHoje fazem aniversário: *{nomes}*! Não esqueçam de parabenizá-los e fazer eles se sentirem especiais! 🎉"
- 
-    print(f"Enviando: {msg_grupo}")
+        linhas = "\n".join(
+            f"• *{nome}*" + (f" _(Célula {celula})_" if celula else "")
+            for nome, celula in aniversariantes_hoje
+        )
+        msg_pessoal = f"Hoje fazem aniversário:\n{linhas} 🎂"
+        msg_grupo   = (
+            f"🎂 *Bom dia, líderes!*\n\n"
+            f"Hoje fazem aniversário:\n{linhas}\n\n"
+            f"Não esqueçam de parabenizá-los e fazer eles se sentirem especiais! 🎉"
+        )
+
+    print(f"Enviando mensagens...")
     send_whatsapp(msg_pessoal, PHONE)
     send_whatsapp(msg_grupo, GROUP)
- 
- 
+
+
 if __name__ == "__main__":
     main()
