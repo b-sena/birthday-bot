@@ -23,6 +23,7 @@ GROUP              = os.environ["EVOLUTION_GROUP"]
 def carregar_aniversariantes():
     resp = requests.get(SHEETS_URL, timeout=30)
     resp.raise_for_status()
+    resp.encoding = "utf-8"
     reader = csv.DictReader(StringIO(resp.text))
     aniversariantes = []
     for row in reader:
