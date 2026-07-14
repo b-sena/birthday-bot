@@ -30,5 +30,6 @@ jobs:
           EVOLUTION_APIKEY:   ${{ secrets.EVOLUTION_APIKEY }}
           EVOLUTION_INSTANCE: ${{ secrets.EVOLUTION_INSTANCE }}
           EVOLUTION_PHONE:    ${{ secrets.EVOLUTION_PHONE }}
-          EVOLUTION_GROUP:    ${{ secrets.EVOLUTION_GROUP }}
+          EVOLUTION_AVISOS: ${{ secrets.EVOLUTION_AVISOS }}
+          # EVOLUTION_GROUP:    ${{ secrets.EVOLUTION_GROUP }}
         run: python check_birthdays.py

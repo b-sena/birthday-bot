@@ -13,7 +13,8 @@ EVOLUTION_URL      = os.environ["EVOLUTION_URL"]
 EVOLUTION_APIKEY   = os.environ["EVOLUTION_APIKEY"]
 EVOLUTION_INSTANCE = os.environ["EVOLUTION_INSTANCE"]
 PHONE              = os.environ["EVOLUTION_PHONE"]
-GROUP              = os.environ["EVOLUTION_GROUP"]
+AVISOS             = os.environ["EVOLUTION_AVISOS"]
+# GROUP              = os.environ["EVOLUTION_GROUP"]
 
 
 # ============================================================
@@ -103,7 +104,8 @@ def main():
 
     print(f"Enviando mensagens...")
     send_whatsapp(msg_pessoal, PHONE)
-    send_whatsapp(msg_grupo, GROUP)
+    # send_whatsapp(msg_grupo, GROUP)
+    send_whatsapp(msg_grupo, AVISOS)
 
 
 if __name__ == "__main__":
