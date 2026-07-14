@@ -80,32 +80,32 @@ def main():
 
     if not aniversariantes_hoje:
         msg_pessoal = f"Nenhum aniversariante hoje ({hoje.strftime('%d/%m')}). 🎂"
-        msg_grupo   = "📅 *Bom dia, líderes!*\n\nNenhum aniversariante hoje. Que seja um ótimo dia! ☀️"
+        msg_avisos  = "📅 *Bom dia, família!*\n\nNenhum aniversariante hoje. Que seja um ótimo dia! ☀️"
     elif len(aniversariantes_hoje) == 1:
         nome, celula = aniversariantes_hoje[0]
-        celula_txt   = f" _(Célula {celula})_" if celula else ""
+        celula_txt   = f" _(Célula {celula})_" if celula and celula != "-" else ""
         msg_pessoal  = f"Hoje é aniversário de *{nome}*{celula_txt}! 🎂"
-        msg_grupo    = (
-            f"🎂 *Bom dia, líderes!*\n\n"
-            f"Hoje é aniversário de *{nome}*{celula_txt}!\n"
-            f"Não esqueçam de parabenizá-lo(a) e fazer ele(a) se sentir especial! 🎉"
+        msg_avisos   = (
+            f"🎂 *Feliz aniversário, {nome}!*{celula_txt}\n\n"
+            f"Que Deus te abençoe muito nesse novo ano de vida! "
+            f"A família BDN Camaquã te ama! 🎉🙏"
         )
     else:
         linhas = "\n".join(
-            f"• *{nome}*" + (f" _(Célula {celula})_" if celula else "")
+            f"• *{nome}*" + (f" _(Célula {celula})_" if celula and celula != "-" else "")
             for nome, celula in aniversariantes_hoje
         )
         msg_pessoal = f"Hoje fazem aniversário:\n{linhas} 🎂"
-        msg_grupo   = (
-            f"🎂 *Bom dia, líderes!*\n\n"
-            f"Hoje fazem aniversário:\n{linhas}\n\n"
-            f"Não esqueçam de parabenizá-los e fazer eles se sentirem especiais! 🎉"
+        msg_avisos  = (
+            f"🎂 *Feliz aniversário!*\n\n"
+            f"Hoje é dia especial para:\n{linhas}\n\n"
+            f"Que Deus abençoe muito a vida de cada um! "
+            f"A família BDN Camaquã ama vocês! 🎉🙏"
         )
 
     print(f"Enviando mensagens...")
     send_whatsapp(msg_pessoal, PHONE)
-    # send_whatsapp(msg_grupo, GROUP)
-    send_whatsapp(msg_grupo, AVISOS)
+    send_whatsapp(msg_avisos, AVISOS)
 
 
 if __name__ == "__main__":
