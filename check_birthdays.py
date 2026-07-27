@@ -87,8 +87,7 @@ def main():
         msg_pessoal  = f"Hoje é aniversário de *{nome}*{celula_txt}! 🎂"
         msg_avisos   = (
             f"🎂 *Feliz aniversário, {nome}!*{celula_txt}\n\n"
-            f"Que Deus te abençoe muito nesse novo ano de vida! "
-            f"A família BDN Camaquã te ama! 🎉🙏"
+            f"Não esqueça de enviar uma mensagem parabenizando 🎉🙏"
         )
     else:
         linhas = "\n".join(
@@ -99,8 +98,7 @@ def main():
         msg_avisos  = (
             f"🎂 *Feliz aniversário!*\n\n"
             f"Hoje é dia especial para:\n{linhas}\n\n"
-            f"Que Deus abençoe muito a vida de cada um! "
-            f"A família BDN Camaquã ama vocês! 🎉🙏"
+            f"Não esqueça de enviar uma mensagem parabenizando 🎉🙏"
         )
 
     print(f"Enviando mensagens...")
