@@ -86,7 +86,7 @@ def main():
         celula_txt   = f" _(Célula {celula})_" if celula and celula != "-" else ""
         msg_pessoal  = f"Hoje é aniversário de *{nome}*{celula_txt}! 🎂"
         msg_avisos   = (
-            f"🎂 *Feliz aniversário, {nome}!*{celula_txt}\n\n"
+            f"🎂 Hoje é aniversário de *{nome}*{celula_txt}!\n\n"
             f"Não esqueça de enviar uma mensagem parabenizando 🎉🙏"
         )
     else:
@@ -96,7 +96,6 @@ def main():
         )
         msg_pessoal = f"Hoje fazem aniversário:\n{linhas} 🎂"
         msg_avisos  = (
-            f"🎂 *Feliz aniversário!*\n\n"
             f"Hoje é dia especial para:\n{linhas}\n\n"
             f"Não esqueça de enviar uma mensagem parabenizando 🎉🙏"
         )
